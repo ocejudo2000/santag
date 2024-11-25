@@ -10,8 +10,8 @@ FTP_HOST = 'ftp.nitrodata.com.mx'
 FTP_PORT = 21
 FTP_USER = 'ocejudo@nitrodata.com.mx'
 FTP_PASS = 'OrionPaola2$#'
-FTP_DIR = '/'  # Directory in the server where the file will be uploaded
-BASE_URL = f"http://{FTP_HOST}{FTP_DIR}"  # Base URL to construct the audio file URL
+FTP_DIR = '/public_html/ocejudo'  # Path in the FTP server
+BASE_URL = "http://nitrodata.com.mx/ocejudo/"  # Base public URL for the uploaded files
 
 # Get all available voices
 async def get_voices():
@@ -27,15 +27,17 @@ def upload_to_ftp(local_file):
         ftp.login(FTP_USER, FTP_PASS)
         ftp.cwd(FTP_DIR)
 
-        # Upload the file and construct the URL
+        # Get the file name from the local file path
         file_name = os.path.basename(local_file)
+
+        # Upload the file
         with open(local_file, 'rb') as file:
             ftp.storbinary(f"STOR {file_name}", file)
 
-        print(f"File {file_name} successfully uploaded to {FTP_HOST}:{FTP_DIR}")
+        print(f"File {file_name} successfully uploaded to {FTP_DIR}")
         ftp.quit()
 
-        # Return the full URL where the file is stored
+        # Return the full public URL of the file
         return f"{BASE_URL}{file_name}"
     except Exception as e:
         print(f"Failed to upload file: {e}")
